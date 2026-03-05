@@ -1,0 +1,28 @@
+import apostrophe from 'apostrophe';
+
+apostrophe({
+  root: import.meta,
+  shortName: 'starter-kit-astro',
+  bundles: [ '@apostrophecms/blog' ],
+  modules: {
+    // Apostrophe module configuration
+    // *******************************
+    //
+    // NOTE: most configuration occurs in the respective modules' directories.
+    // See modules/@apostrophecms/page/index.js for an example.
+    //
+    // Any modules that are not present by default in Apostrophe must at least
+    // have a minimal configuration here to turn them on: `moduleName: {}`
+    // ***********************************************************************
+    '@apostrophecms/vite': {},
+    '@apostrophecms/rich-text-widget': {},
+    '@apostrophecms/image-widget': {},
+    '@apostrophecms/video-widget': {},
+    // The project's first custom page type.
+    'default-page': {},
+    '@apostrophecms/blog': {},
+    '@apostrophecms/blog-page': {},
+    'nested-layout-widget': {},
+    'nested-column-widget': {}
+  }
+});
