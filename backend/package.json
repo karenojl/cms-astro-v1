@@ -5,12 +5,13 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app",
-    "dev": "cross-env APOS_EXTERNAL_FRONT_KEY=dev nodemon",
-    "build": "cross-env NODE_ENV=production node app @apostrophecms/asset:build",
-    "serve": "cross-env NODE_ENV=production node app",
+    "start": "node --env-file=.env app",
+    "dev": "nodemon --exec \"node --env-file=.env\" app.js",
+    "add-user": "node --env-file=.env app @apostrophecms/user:add",
+    "build": "cross-env NODE_ENV=production node --env-file=.env app @apostrophecms/asset:build",
+    "serve": "cross-env NODE_ENV=production node --env-file=.env app",
     "release": "npm install && npm run build && npm run migrate",
-    "migrate": "cross-env NODE_ENV=production node app @apostrophecms/migration:migrate"
+    "migrate": "cross-env NODE_ENV=production node --env-file=.env app @apostrophecms/migration:migrate"
   },
   "nodemonConfig": {
     "delay": 1000,
