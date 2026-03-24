@@ -8,7 +8,8 @@ export default {
             '@apostrophecms/rich-text': {},
             '@apostrophecms/image': {},
             '@apostrophecms/video': {},
-            '@apostrophecms/layout': {}
+            '@apostrophecms/layout': {},
+            counter: {}
           }
         }
       }

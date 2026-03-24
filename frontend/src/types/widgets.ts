@@ -44,6 +44,16 @@ export interface SlideshowWidgetData extends AposWidgetBase {
   slides?: AposAreaData;
 }
 
+export type CounterBackgroundTone = "ocean" | "sunset" | "mint" | "berry";
+
+export interface CounterWidgetData extends AposWidgetBase {
+  title?: string;
+  initialValue?: number | string;
+  backgroundTone?: string;
+  borderWidth?: number | string;
+  borderRadius?: number | string;
+}
+
 export interface ImagePresentation {
   src: string;
   alt?: string | null;
@@ -100,4 +110,12 @@ export interface SlideshowWidgetViewProps {
 export interface VideoWidgetViewProps {
   url?: string;
   placeholder?: boolean;
+}
+
+export interface CounterWidgetViewProps {
+  title?: string;
+  initialValue: number;
+  backgroundTone: CounterBackgroundTone;
+  borderWidth: number;
+  borderRadius: number;
 }

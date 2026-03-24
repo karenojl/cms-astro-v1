@@ -1,5 +1,6 @@
 export default {
   '@apostrophecms/image': {},
   '@apostrophecms/video': {},
-  '@apostrophecms/rich-text': {}
+  '@apostrophecms/rich-text': {},
+  counter: {}
 };

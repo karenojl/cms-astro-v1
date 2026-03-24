@@ -9,7 +9,8 @@ export default {
             '@apostrophecms/rich-text': {},
             '@apostrophecms/image': {},
             '@apostrophecms/video': {},
-            '@apostrophecms/file': {}
+            '@apostrophecms/file': {},
+            counter: {}
           }
         }
       }

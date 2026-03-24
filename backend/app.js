@@ -20,6 +20,7 @@ apostrophe({
     '@apostrophecms/video-widget': {},
     '@apostrophecms/file-widget': {},
     'button-widget': {},
+    'counter-widget': {},
     'hero-widget': {},
     'slideshow-widget': {},
     // The project's first custom page type.

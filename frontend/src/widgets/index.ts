@@ -2,6 +2,7 @@ import LayoutWidget from "@apostrophecms/apostrophe-astro/widgets/LayoutWidget.a
 import LayoutColumnWidget from "@apostrophecms/apostrophe-astro/widgets/LayoutColumnWidget.astro";
 
 import ButtonWidget from "./ButtonWidget.astro";
+import CounterWidget from "./CounterWidget.astro";
 import FileWidget from "./FileWidget.astro";
 import HeroWidget from "./HeroWidget.astro";
 import ImageWidget from "./ImageWidget.astro";
@@ -18,6 +19,8 @@ const widgetComponents = {
   "@apostrophecms/layout-column": LayoutColumnWidget,
   "button": ButtonWidget,
   "button-widget": ButtonWidget,
+  "counter": CounterWidget,
+  "counter-widget": CounterWidget,
   "hero": HeroWidget,
   "hero-widget": HeroWidget,
   "slideshow": SlideshowWidget,

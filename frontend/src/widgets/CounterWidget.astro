@@ -1,0 +1,27 @@
+---
+import { clampCounterNumber, resolveCounterTone } from "@/lib/counter";
+import type { CounterWidgetData, CounterWidgetViewProps } from "@/types/widgets";
+import { CounterWidgetView } from "@/widgets/react/CounterWidgetView";
+
+interface Props {
+  widget?: CounterWidgetData;
+}
+
+const { widget = {} } = Astro.props as Props;
+
+const backgroundTone = resolveCounterTone(widget.backgroundTone);
+const initialValue = clampCounterNumber(widget.initialValue, 0, { min: -999, max: 999 });
+const borderWidth = clampCounterNumber(widget.borderWidth, 2, { min: 0, max: 12 });
+const borderRadius = clampCounterNumber(widget.borderRadius, 28, { min: 0, max: 48 });
+const title = typeof widget.title === "string" && widget.title.trim() ? widget.title.trim() : "Interactive Counter";
+
+const props: CounterWidgetViewProps = {
+  title,
+  initialValue,
+  backgroundTone,
+  borderWidth,
+  borderRadius,
+};
+---
+
+<CounterWidgetView client:load {...props} />
