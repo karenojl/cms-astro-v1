@@ -1,8 +1,7 @@
 export default {
   options: {
     session: {
-      // If this still says `undefined`, set a real secret!
-      secret: undefined
+      secret: process.env.APOS_SESSION_SECRET || "cms-astro-v1-dev-session-secret"
     }
   }
 };

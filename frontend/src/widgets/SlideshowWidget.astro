@@ -1,0 +1,14 @@
+---
+import AposArea from "@apostrophecms/apostrophe-astro/components/AposArea.astro";
+
+const { widget } = Astro.props;
+const slidesArea = widget?.slides?.metaType === "area" ? widget.slides : null;
+---
+
+<section class="slideshow-widget">
+  {slidesArea ? (
+    <AposArea area={slidesArea} />
+  ) : (
+    <p class="slideshow-widget__empty">No slides configured.</p>
+  )}
+</section>

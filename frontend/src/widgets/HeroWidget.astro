@@ -1,0 +1,12 @@
+---
+import AposArea from "@apostrophecms/apostrophe-astro/components/AposArea.astro";
+
+const { widget } = Astro.props;
+const bodyArea = widget?.body?.metaType === "area" ? widget.body : null;
+---
+
+<section class="hero-widget">
+  {widget?.label && <h2 class="hero-widget__title">{widget.label}</h2>}
+  {widget?.sublabel && <p class="hero-widget__subtitle">{widget.sublabel}</p>}
+  {bodyArea && <AposArea area={bodyArea} />}
+</section>

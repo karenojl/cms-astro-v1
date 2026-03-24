@@ -1,0 +1,11 @@
+---
+import ImageLink from "./ImageLink.astro";
+
+const { image, link, caption, style } = Astro.props;
+const hasCaption = Boolean(caption && `${caption}`.trim());
+---
+
+<figure class:list={[style, hasCaption && `${style}--captioned`]}>
+  <ImageLink image={image} link={link?.url ? link : undefined} />
+  {hasCaption && <figcaption class={`${style}__caption`}>{caption}</figcaption>}
+</figure>

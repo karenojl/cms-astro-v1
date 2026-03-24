@@ -18,6 +18,10 @@ apostrophe({
     '@apostrophecms/rich-text-widget': {},
     '@apostrophecms/image-widget': {},
     '@apostrophecms/video-widget': {},
+    '@apostrophecms/file-widget': {},
+    'button-widget': {},
+    'hero-widget': {},
+    'slideshow-widget': {},
     // The project's first custom page type.
     'default-page': {},
     '@apostrophecms/blog': {},

@@ -24,7 +24,8 @@ export default {
               type: 'area',
               options: {
                 widgets: {
-                  '@apostrophecms/image': {}
+                  '@apostrophecms/image': {},
+                  'button': {}
                 }
               }
             }

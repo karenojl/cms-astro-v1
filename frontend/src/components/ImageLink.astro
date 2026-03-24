@@ -22,11 +22,12 @@ export interface Props {
 const style =
   `object-position: ${image.objectPosition};${image.aspectRatio ? `--aspect-ratio: ${image.aspectRatio};` : ""}
   `.trim();
+const hasLink = Boolean(link?.url);
 ---
 
 <Fragment>
   {
-    !link && (
+    !hasLink && (
       <img
         class={image.style}
         src={image.src}
@@ -41,7 +42,7 @@ const style =
     )
   }
   {
-    link && (
+    hasLink && (
       <a href={link.url} title={link.title} target={link.target} rel={link.rel}>
         <img
           class={image.style}

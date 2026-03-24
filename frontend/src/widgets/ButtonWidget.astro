@@ -1,0 +1,19 @@
+---
+const { widget } = Astro.props;
+
+const label = widget?.label || widget?.title || widget?.text || "Button";
+const href = widget?.url || widget?.href || widget?.linkHref;
+const variant = widget?.variant || widget?.style || "primary";
+const target = widget?.openInNewTab || widget?.target === "_blank" ? "_blank" : undefined;
+const rel = target === "_blank" ? "noopener noreferrer" : undefined;
+---
+
+{
+  href ? (
+    <a class:list={["button-widget", `button-widget--${variant}`]} href={href} target={target} rel={rel}>
+      {label}
+    </a>
+  ) : (
+    <span class:list={["button-widget", `button-widget--${variant}`]}>{label}</span>
+  )
+}
