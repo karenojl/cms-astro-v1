@@ -1,15 +1,11 @@
 ---
-import AposArea from '@apostrophecms/apostrophe-astro/components/AposArea.astro';
-import dayjs from 'dayjs';
+import AposArea from "@apostrophecms/apostrophe-astro/components/AposArea.astro";
+import { BlogShowPageView } from "@/templates/react/BlogShowPageView";
 
-const { page, piece, user, query } = Astro.props.aposData;
+const { piece } = Astro.props.aposData;
 const { main } = piece;
 ---
 
-<section class="bp-content">
-  <h1>{ piece.title }</h1>
-  <h4>
-    Released On { dayjs(piece.publishedAt).format('MMMM D, YYYY') }
-  </h4>
+<BlogShowPageView title={piece.title} publishedAt={piece.publishedAt}>
   <AposArea area={main} />
-</section>
+</BlogShowPageView>

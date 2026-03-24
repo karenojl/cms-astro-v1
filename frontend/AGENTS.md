@@ -2,14 +2,14 @@
 
 ## Purpose
 
-`frontend/` is the Astro application. It does not own content modeling. It receives Apostrophe page data through `@apostrophecms/apostrophe-astro` and renders templates and widgets.
+`frontend/` is the Astro application shell. It does not own content modeling. It receives Apostrophe page data through `@apostrophecms/apostrophe-astro` and renders templates and widgets through a mixed Astro + React stack.
 
 ## Entry Points
 
 - Main route: `src/pages/[...slug].astro`
-- Template registry: `src/templates/index.js`
-- Widget registry: `src/widgets/index.js`
-- Shared styles: `src/styles/styles.css`
+- Template registry: `src/templates/index.ts`
+- Widget registry: `src/widgets/index.ts`
+- Shared styles entry: `src/styles/app.css`
 
 ## Rendering Model
 
@@ -22,9 +22,15 @@ The frontend uses a single catch-all route:
 
 This means Astro routing is content-driven. Most new page behavior is implemented by adding or updating template components rather than by adding new route files.
 
+Astro remains the routing and Apostrophe bridge layer. Most UI should now live in React `tsx` components under:
+
+- `src/templates/react/`
+- `src/widgets/react/`
+- `src/components/react/`
+
 ## Template Rules
 
-`src/templates/index.js` maps Apostrophe page type names to Astro components.
+`src/templates/index.ts` maps Apostrophe page type names to Astro components.
 
 Current mappings:
 
@@ -36,20 +42,24 @@ Current mappings:
 
 When adding or renaming a backend page type:
 
-1. create or update the matching Astro template
-2. update `src/templates/index.js`
-3. verify the backend type name matches the mapping key exactly
+1. create or update the matching Astro template wrapper
+2. add or update the React view in `src/templates/react/` when the UI changes
+3. update `src/templates/index.ts`
+4. verify the backend type name matches the mapping key exactly
 
 ## Widget Rules
 
-`src/widgets/index.js` maps Apostrophe widget names to Astro components.
+`src/widgets/index.ts` maps Apostrophe widget names to Astro components.
 
-Current local widget components:
+Current local widget wrappers:
 
 - `RichTextWidget.astro`
 - `ImageWidget.astro`
 - `VideoWidget.astro`
 - `FileWidget.astro`
+- `ButtonWidget.astro`
+- `HeroWidget.astro`
+- `SlideshowWidget.astro`
 
 Current integration-based widget components:
 
@@ -61,32 +71,28 @@ Current integration-based widget components:
 When adding or renaming a widget in backend schema options:
 
 1. confirm the backend module key
-2. add or update the Astro widget component if needed
-3. update `src/widgets/index.js`
-4. verify the widget is allowed inside the relevant backend area field
+2. add or update the Astro wrapper if needed
+3. add or update the React view under `src/widgets/react/`
+4. update `src/widgets/index.ts`
+5. verify the widget is allowed inside the relevant backend area field
 
 ## Editing Guidance
 
 Change by concern:
 
-- Page-level rendering: `src/templates/`
-- Widget-level rendering: `src/widgets/`
-- Reusable markup helpers: `src/components/`
-- Shared CSS: `src/styles/`
+- Page-level wrappers: `src/templates/`
+- Widget-level wrappers: `src/widgets/`
+- React page/widget/component views: `src/templates/react/`, `src/widgets/react/`, `src/components/react/`
+- Shared helpers: `src/lib/`
+- Shared types: `src/types/`
+- Shared CSS and Tailwind entry: `src/styles/`
 
 Before changing rendering behavior, check:
 
-- whether `aposData.page`, `aposData.piece`, or area data shape is assumed by the template
-- whether the backend schema still provides the fields the template reads
+- whether `aposData.page`, `aposData.piece`, or area data shape is assumed by the wrapper
+- whether the backend schema still provides the fields the view reads
 - whether the registry keys still match backend module names
-
-## Known Frontend Gaps
-
-These are present in the current repo:
-
-- `src/pages/[...slug].astro` imports `../styles/app.css`, but `src/styles/app.css` is missing.
-- `src/widgets/ImageWidget.astro` imports `../components/Figure.astro`, but that file is missing.
-- There is no committed `astro.config.*` file in `frontend/`, despite the README describing one.
+- whether any CSS selector is relied on by Apostrophe style controls
 
 Do not assume the starter-kit README reflects the current working state of this folder.
 
@@ -95,5 +101,5 @@ Do not assume the starter-kit README reflects the current working state of this 
 - `npm run dev`
 - `npm run build`
 - `npm run preview`
-
-The current checkout does not have dependencies installed, so `astro`-based commands will fail until install is completed.
+- `npm run check`
+- `npm run typecheck`

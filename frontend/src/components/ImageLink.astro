@@ -43,7 +43,7 @@ const hasLink = Boolean(link?.url);
   }
   {
     hasLink && (
-      <a href={link.url} title={link.title} target={link.target} rel={link.rel}>
+      <a href={link?.url} title={link?.title} target={link?.target} rel={link?.rel}>
         <img
           class={image.style}
           src={image.src}

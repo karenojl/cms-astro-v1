@@ -1,12 +1,17 @@
 ---
 import AposArea from "@apostrophecms/apostrophe-astro/components/AposArea.astro";
+import { getAreaOrNull } from "@/lib/apos";
+import { HeroWidgetView } from "@/widgets/react/HeroWidgetView";
+import type { HeroWidgetData } from "@/types/widgets";
 
-const { widget } = Astro.props;
-const bodyArea = widget?.body?.metaType === "area" ? widget.body : null;
+interface Props {
+  widget?: HeroWidgetData;
+}
+
+const { widget = {} } = Astro.props as Props;
+const bodyArea = getAreaOrNull(widget.body);
 ---
 
-<section class="hero-widget">
-  {widget?.label && <h2 class="hero-widget__title">{widget.label}</h2>}
-  {widget?.sublabel && <p class="hero-widget__subtitle">{widget.sublabel}</p>}
+<HeroWidgetView label={widget.label} sublabel={widget.sublabel}>
   {bodyArea && <AposArea area={bodyArea} />}
-</section>
+</HeroWidgetView>

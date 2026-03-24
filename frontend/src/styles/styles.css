@@ -1,11 +1,50 @@
-/* These styles are being used for demonstrating the `@apostrophecms/styles` module */
-:root {
-  --content-max-width: 1200px;
+@theme {
+  --color-brand-950: #020617;
+  --color-brand-700: #0f172a;
+  --color-accent-400: #22d3ee;
 }
 
-main {
-  width: 100%;
-  max-width: var(--content-max-width);
-  margin-left: auto;
-  margin-right: auto;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(34, 211, 238, 0.08), transparent 30%),
+      linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    color: #0f172a;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+@layer components {
+  .bp-content {
+    @apply space-y-8;
+  }
+
+  .img-widget {
+    width: 100%;
+  }
+
+  .img-widget__image {
+    display: block;
+    width: 100%;
+  }
+
+  .rich-text-widget > * + * {
+    margin-top: 1rem;
+  }
+
+  .rich-text-widget a {
+    @apply font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 transition-colors hover:text-slate-700;
+  }
+
+  video-widget {
+    width: 100%;
+  }
 }

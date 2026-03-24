@@ -1,14 +1,17 @@
 ---
 import AposArea from "@apostrophecms/apostrophe-astro/components/AposArea.astro";
+import { getAreaOrNull } from "@/lib/apos";
+import { SlideshowWidgetView } from "@/widgets/react/SlideshowWidgetView";
+import type { SlideshowWidgetData } from "@/types/widgets";
 
-const { widget } = Astro.props;
-const slidesArea = widget?.slides?.metaType === "area" ? widget.slides : null;
+interface Props {
+  widget?: SlideshowWidgetData;
+}
+
+const { widget = {} } = Astro.props as Props;
+const slidesArea = getAreaOrNull(widget.slides);
 ---
 
-<section class="slideshow-widget">
-  {slidesArea ? (
-    <AposArea area={slidesArea} />
-  ) : (
-    <p class="slideshow-widget__empty">No slides configured.</p>
-  )}
-</section>
+<SlideshowWidgetView hasSlides={Boolean(slidesArea)}>
+  {slidesArea && <AposArea area={slidesArea} />}
+</SlideshowWidgetView>

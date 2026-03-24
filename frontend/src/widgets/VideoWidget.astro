@@ -1,90 +1,76 @@
 ---
-const { widget } = Astro.props;
-const placeholder = widget?.aposPlaceholder ? 'true' : '';
+import { VideoWidgetView } from "@/widgets/react/VideoWidgetView";
+
+const { widget = {} } = Astro.props;
+const placeholder = Boolean(widget?.aposPlaceholder);
 const url = widget?.video?.url;
 ---
-<style>
-  video-widget {
-    width: 100%;
-  }
-</style>
-<video-widget
-  url={placeholder ? 'https://youtu.be/Q5UX9yexEyM' : url }
->
-</video-widget>
+
+<VideoWidgetView url={url} {placeholder} />
 <script>
-  class VideoWidget extends HTMLElement {
-    result: {
-      width: number,
-      height: number,
-      html: string
-    };
-    canvasEl: HTMLElement;
-    constructor() {
-      super();
-      this.init();
-    }
-    async init() {
-      const videoUrl = this.getAttribute('url');
+  if (!customElements.get("video-widget")) {
+    class VideoWidget extends HTMLElement {
+      result = {
+        width: 0,
+        height: 0,
+        html: "",
+      };
+      canvasEl: HTMLElement | null = null;
 
-      if (!videoUrl) {
-        return;
+      constructor() {
+        super();
+        this.init();
       }
-
-      this.result = await this.oembed(videoUrl);
-
-      this.renderVideo();
-    }
-    async oembed(url) {
-      const response = await fetch('/api/v1/@apostrophecms/oembed/query?' + new URLSearchParams({
-        url
-      }));
-      if (response.status >= 400) {
-        throw new Error(`oembed error code: ${response.status}`);
-      }
-      return response.json();
-    }
-
-    renderVideo() {
-      const shaker = document.createElement('div');
-      shaker.innerHTML = this.result.html;
-      const inner = shaker.firstChild;
-      if (!(inner && (inner instanceof HTMLElement))) {
-        throw new Error('First child must be an HTML element');
-      }
-      this.canvasEl = inner;
-      this.innerHTML = '';
-      if (!inner) {
-        return;
-      }
-      inner.removeAttribute('width');
-      inner.removeAttribute('height');
-      this.append(inner);
-      // wait for CSS width to be known
-      setTimeout(() => {
-        // If oembed results include width and height we can get the
-        // video aspect ratio right
-        if (this.result.width && this.result.height) {
-          inner.style.width = '100%';
-          this.resizeVideo();
-          // If we need to initially size the video, also resize it on window
-          // resize.
-          window.addEventListener('resize', this.resizeHandler.bind(this));
-        } else {
-          // No, so assume the oembed HTML code is responsive.
+      async init() {
+        const videoUrl = this.getAttribute("url");
+        if (!videoUrl) {
+          return;
         }
-      }, 0);
-    }
-    resizeVideo() {
-      this.canvasEl.style.height = ((this.result.height / this.result.width) * this.canvasEl.offsetWidth) + 'px';
-    }
-    resizeHandler() {
-      if (document.contains(this)) {
-        this.resizeVideo();
-      } else {
-        window.removeEventListener('resize', this.resizeHandler);
+
+        this.result = await this.oembed(videoUrl);
+        this.renderVideo();
+      }
+      async oembed(url: string) {
+        const response = await fetch("/api/v1/@apostrophecms/oembed/query?" + new URLSearchParams({ url }));
+        if (response.status >= 400) {
+          throw new Error(`oembed error code: ${response.status}`);
+        }
+        return response.json();
+      }
+      renderVideo() {
+        const shaker = document.createElement("div");
+        shaker.innerHTML = this.result.html;
+        const inner = shaker.firstChild;
+        if (!(inner && inner instanceof HTMLElement)) {
+          throw new Error("First child must be an HTML element");
+        }
+        this.canvasEl = inner;
+        this.innerHTML = "";
+        inner.removeAttribute("width");
+        inner.removeAttribute("height");
+        this.append(inner);
+        setTimeout(() => {
+          if (this.result.width && this.result.height) {
+            inner.style.width = "100%";
+            this.resizeVideo();
+            window.addEventListener("resize", this.resizeHandler.bind(this));
+          }
+        }, 0);
+      }
+      resizeVideo() {
+        if (!this.canvasEl) {
+          return;
+        }
+        this.canvasEl.style.height = ((this.result.height / this.result.width) * this.canvasEl.offsetWidth) + "px";
+      }
+      resizeHandler() {
+        if (document.contains(this)) {
+          this.resizeVideo();
+        } else {
+          window.removeEventListener("resize", this.resizeHandler);
+        }
       }
     }
+    customElements.define("video-widget", VideoWidget);
   }
-  customElements.define('video-widget', VideoWidget);
 </script>

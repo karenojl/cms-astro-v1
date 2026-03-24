@@ -1,19 +1,20 @@
 ---
-const { widget } = Astro.props;
+import { ButtonWidgetView } from "@/widgets/react/ButtonWidgetView";
+import type { ButtonWidgetData, ButtonWidgetViewProps } from "@/types/widgets";
 
-const label = widget?.label || widget?.title || widget?.text || "Button";
-const href = widget?.url || widget?.href || widget?.linkHref;
-const variant = widget?.variant || widget?.style || "primary";
-const target = widget?.openInNewTab || widget?.target === "_blank" ? "_blank" : undefined;
+interface Props {
+  widget?: ButtonWidgetData;
+}
+
+const { widget = {} } = Astro.props as Props;
+const label = widget.label || widget.title || widget.text || "Button";
+const href = widget.url || widget.href || widget.linkHref;
+const unsafeVariant = widget.variant || widget.style || "primary";
+const variant: ButtonWidgetViewProps["variant"] = ["primary", "secondary", "text"].includes(unsafeVariant)
+  ? (unsafeVariant as ButtonWidgetViewProps["variant"])
+  : "primary";
+const target = widget.openInNewTab || widget.target === "_blank" ? "_blank" : undefined;
 const rel = target === "_blank" ? "noopener noreferrer" : undefined;
 ---
 
-{
-  href ? (
-    <a class:list={["button-widget", `button-widget--${variant}`]} href={href} target={target} rel={rel}>
-      {label}
-    </a>
-  ) : (
-    <span class:list={["button-widget", `button-widget--${variant}`]}>{label}</span>
-  )
-}
+<ButtonWidgetView label={label} href={href} variant={variant} target={target} rel={rel} />

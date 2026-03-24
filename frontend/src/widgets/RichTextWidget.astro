@@ -1,5 +1,12 @@
 ---
-const { widget } = Astro.props;
-const { content } = widget;
+import { RichTextWidgetView } from "@/widgets/react/RichTextWidgetView";
+import type { RichTextWidgetData } from "@/types/widgets";
+
+interface Props {
+  widget?: RichTextWidgetData;
+}
+
+const { widget = {} } = Astro.props as Props;
 ---
-<div class="rich-text-widget" set:html={ content }></div>
+
+<RichTextWidgetView content={widget.content} />

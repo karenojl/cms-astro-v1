@@ -1,8 +1,13 @@
 ---
-const { widget } = Astro.props;
-const { _file } = widget;
-const file = _file[0];
+import { FileWidgetView } from "@/widgets/react/FileWidgetView";
+import type { FileWidgetData } from "@/types/widgets";
+
+interface Props {
+  widget?: FileWidgetData;
+}
+
+const { widget = {} } = Astro.props as Props;
+const file = widget._file?.[0];
 ---
-<div>
-  { (file && <a href={file._url} download>{file.title}</a>) || 'No file selected' }
-</div>
+
+<FileWidgetView href={file?._url} title={file?.title ?? undefined} />

@@ -2,9 +2,9 @@
 
 ## Summary
 
-This project combines an Astro frontend with an ApostropheCMS backend. The backend owns content and editing. The frontend owns page rendering. The two sides are linked through `@apostrophecms/apostrophe-astro`.
+This project combines an Astro frontend shell with an ApostropheCMS backend. The backend owns content and editing. The frontend owns page rendering, with Astro handling routing and Apostrophe bridging while React + TypeScript handle most UI components. The two sides are linked through `@apostrophecms/apostrophe-astro`.
 
-This document reflects the checked-in repo, including known gaps, and should be treated as more authoritative than the starter-kit README when they differ.
+This document reflects the checked-in repo and should be treated as more authoritative than the starter-kit README when they differ.
 
 ## Runtime Architecture
 
@@ -15,9 +15,10 @@ This document reflects the checked-in repo, including known gaps, and should be 
 3. That route calls `aposPageFetch(Astro.request)` from `@apostrophecms/apostrophe-astro`.
 4. Apostrophe returns page-oriented data as `aposData`.
 5. Astro wraps the response in `AposLayout`.
-6. `AposTemplate` resolves the page type through `frontend/src/templates/index.js`.
-7. Any Apostrophe areas inside the resolved template are rendered through `AposArea`.
-8. Widgets inside those areas are resolved through `frontend/src/widgets/index.js`.
+6. `AposTemplate` resolves the page type through `frontend/src/templates/index.ts`.
+7. Thin Astro templates render React page views and any required `AposArea` bridges.
+8. Widgets inside those areas are resolved through `frontend/src/widgets/index.ts`.
+9. Thin Astro widget wrappers render React widget views or custom element bridges when DOM APIs are needed.
 
 ### Editing Flow
 
@@ -41,10 +42,13 @@ The backend owns:
 
 The frontend owns:
 
-- page templates in `frontend/src/templates/`
-- widget renderers in `frontend/src/widgets/`
-- reusable rendering helpers in `frontend/src/components/`
-- Astro-side CSS in `frontend/src/styles/`
+- page template wrappers in `frontend/src/templates/`
+- React page views in `frontend/src/templates/react/`
+- widget wrappers in `frontend/src/widgets/`
+- React widget views in `frontend/src/widgets/react/`
+- reusable rendering helpers in `frontend/src/components/` and `frontend/src/components/react/`
+- shared types and adapter helpers in `frontend/src/types/` and `frontend/src/lib/`
+- Tailwind entry and global CSS in `frontend/src/styles/`
 
 ### Contract Between Apps
 
@@ -52,7 +56,8 @@ The cross-app contract is name-based:
 
 - backend page type names must match frontend template registry keys
 - backend widget type names must match frontend widget registry keys
-- template and widget components must expect the field shapes returned in `aposData`
+- template and widget wrappers must expect the field shapes returned in `aposData`
+- React views should receive normalized typed props instead of raw `Astro.props`
 
 Any backend schema or naming change should be treated as a potential frontend task.
 
@@ -66,12 +71,12 @@ These files appear to target a legacy Stagecoach-style deployment flow. They are
 
 | Change | Primary backend edit | Primary frontend edit | Verify |
 | --- | --- | --- | --- |
-| Add page type | `backend/modules/@apostrophecms/page/index.js` plus new module config | new template in `frontend/src/templates/` and registry entry in `frontend/src/templates/index.js` | route resolves and template renders |
-| Add widget | module registration and allowed widget lists in backend schemas | new component in `frontend/src/widgets/` and registry entry in `frontend/src/widgets/index.js` | widget renders through `AposArea` |
-| Change page schema | relevant backend module `index.js` | update templates that read changed fields | page data shape still matches template assumptions |
-| Change widget schema | relevant backend widget module or area config | update widget component props/field reads | widget data shape still matches renderer |
-| Change site styles | optional style controls in `backend/modules/@apostrophecms/styles/index.js` | CSS in `frontend/src/styles/` or component styles | styles apply in rendered Astro output |
-| Change editing behavior | backend module config or backend layout | sometimes none, sometimes template/widget support | editing still works through frontend URL |
+| Add page type | `backend/modules/@apostrophecms/page/index.js` plus new module config | new template wrapper in `frontend/src/templates/`, optional React view in `frontend/src/templates/react/`, and registry entry in `frontend/src/templates/index.ts` | route resolves and template renders |
+| Add widget | module registration and allowed widget lists in backend schemas | new wrapper in `frontend/src/widgets/`, optional React view in `frontend/src/widgets/react/`, and registry entry in `frontend/src/widgets/index.ts` | widget renders through `AposArea` |
+| Change page schema | relevant backend module `index.js` | update wrappers or views that read changed fields | page data shape still matches template assumptions |
+| Change widget schema | relevant backend widget module or area config | update wrapper normalization or view props | widget data shape still matches renderer |
+| Change site styles | optional style controls in `backend/modules/@apostrophecms/styles/index.js` | Tailwind or CSS in `frontend/src/styles/` and component classNames | styles apply in rendered Astro output |
+| Change editing behavior | backend module config or backend layout | sometimes none, sometimes wrapper or view support | editing still works through frontend URL |
 | Change deployment behavior | `backend/deployment/` or `backend/scripts/` | Astro hosting/runtime config if introduced later | deployment docs still match repo |
 
 ## Commands and Environment
@@ -89,6 +94,8 @@ Root commands are wrappers only.
 - `cd frontend && npm run dev`
 - `cd frontend && npm run build`
 - `cd frontend && npm run preview`
+- `cd frontend && npm run check`
+- `cd frontend && npm run typecheck`
 
 ### Backend
 
@@ -106,17 +113,13 @@ Root commands are wrappers only.
 
 These are concrete findings from the checked-in files:
 
-- `frontend/astro.config.*` is missing even though the README references it and frontend dependencies imply Astro adapter configuration should exist.
-- `frontend/src/pages/[...slug].astro` imports `../styles/app.css`, but `frontend/src/styles/app.css` is absent.
-- `frontend/src/widgets/ImageWidget.astro` imports `../components/Figure.astro`, but `frontend/src/components/Figure.astro` is absent.
 - `backend/modules/@apostrophecms/blog/index.js` references `two-column`, but no matching module is present.
-- `backend/modules/@apostrophecms/layout-column-widget/index.js` references `nested-layout`, while `backend/app.js` and `frontend/src/widgets/index.js` use `nested-layout-widget`.
-- The inspected checkout had no installed dependencies, so build validation is currently blocked until install is run.
+- `backend/modules/@apostrophecms/layout-column-widget/index.js` references `nested-layout`, while `backend/app.js` and the frontend registry also support `nested-layout-widget`.
+- backend and frontend currently rely on alias keys like `slideshow` and `slideshow-widget` to stay compatible during migration.
 
 ## Recommended Follow-Up Backlog
 
-1. Add or restore the missing Astro config file and confirm adapter/output settings.
-2. Resolve missing frontend imports: `src/styles/app.css` and `src/components/Figure.astro`.
-3. Normalize widget naming between backend schema options, module registration, and frontend widget registry.
-4. Decide whether `two-column` should be implemented, renamed, or removed.
-5. After installing dependencies, run frontend, backend, and root builds and update docs if command behavior differs from current assumptions.
+1. Normalize widget naming between backend schema options, module registration, and frontend widget registry so aliases can be removed.
+2. Decide whether `two-column` should be implemented, renamed, or removed.
+3. Add linting and frontend rendering tests once the new React view layer stabilizes.
+4. Decide whether the video widget should keep the custom element bridge or move to a React-first embed strategy.

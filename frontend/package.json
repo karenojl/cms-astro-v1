@@ -6,16 +6,31 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "check": "astro check",
+    "typecheck": "tsc --noEmit",
     "serve": "HOST=0.0.0.0 PORT=4321 node --env-file=.env ./dist/server/entry.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@apostrophecms/apostrophe-astro": "^1.4.0",
+    "@astrojs/react": "^4.3.0",
     "@astrojs/node": "^9.4.3",
+    "@tailwindcss/vite": "^4.1.12",
     "astro": "^5.13.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dayjs": "^1.11.10",
     "postcss-viewport-to-container-toggle": "^1.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwindcss": "^4.1.12",
     "vite": "^7.1.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "typescript": "^5.9.2"
   }
 }
